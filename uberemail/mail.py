@@ -23,8 +23,8 @@ def sendmail(**kwargs):
   in the configuration file.
 
   Keyword arguments:
-  sender -- display name and email address of the sender of the email
-  to -- email address(es) to which to send the email
+  sender -- email address of the sender
+  to -- email address(es) of the recipients
   subject -- subject line of the email
   text -- body of the email
   """
