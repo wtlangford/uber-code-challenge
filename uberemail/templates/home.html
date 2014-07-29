@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Email Sender</title>
+	</head>
+	<body>
+		<div>
+			<form action="/send" method="POST">
+				From: <input type="email" name="sender" /> <br />
+				To: <input type="email" name="to" multiple /> <br />
+				Subject: <input name="subject" /> <br />
+				Body: <input name="text" /> <br />
+				<input type="submit" />
+			</form>
+		</div>
+	</body>
+</html>
