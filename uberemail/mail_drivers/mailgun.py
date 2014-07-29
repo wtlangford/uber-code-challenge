@@ -37,6 +37,6 @@ class MailgunMailer(Mailer):
             "to": kwargs['to'],
             "subject": str(kwargs['subject']),
             "text": str(kwargs['text'])})
-      return r.text
+      return r.json()
     except AssertionError, e:
       return None

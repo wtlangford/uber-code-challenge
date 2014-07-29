@@ -41,6 +41,6 @@ class MandrillMailer(Mailer):
       pp(data)
       r = requests.post("{baseURL}/messages/send.json".format(baseURL=self.baseURL),
         data=json.dumps(data))
-      return r.text
+      return r.json()
     except AssertionError, e:
       return None
