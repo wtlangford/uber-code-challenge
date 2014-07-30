@@ -3,6 +3,7 @@ from pprint import pprint as pp
 import json
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+from base64 import b64encode
 
 def build(**kwargs):
   return MandrillMailer(**kwargs)
@@ -25,18 +26,29 @@ class MandrillMailer(Mailer):
     try:
 # We coerce all of the arguments to the desired types, since they don't
 # -necessarily- have to be strings or lists until we send them to the endpoint 
-      data = {"key": self.key,
-              "message": {
-                "from_email": str(kwargs['sender']),
-                "to": [{"email": str(x)} for x in kwargs['to']],
-                "subject": str(kwargs['subject']),
-                "text": str(kwargs['text'])
-              }
-             } 
+      message = {"from_email": str(kwargs['sender']),
+                 "to": [{"email": str(x)} for x in kwargs['to']],
+                 "subject": str(kwargs['subject']),
+                 "text": str(kwargs['text'])
+                }
+      if 'cc' in kwargs:
+        message['to'].append([{'email': str(x), 'type':'cc'} for x in kwargs['cc']])
+      if 'bcc' in kwargs:
+        message['to'].append([{'email': str(x), 'type':'bcc'} for x in kwargs['bcc']])
+      if 'attachments' in kwargs:
+        attachments = []
+        for attach in kwargs['attachments']:
+          attachments.append({'type': attach.mimetype,
+                              'name': attach.filename,
+                              'content': b64encode(attach.read())})
+        message['attachments'] = attachments
+      data = {"key": self.key,"message": message}
       pp(data)
       r = requests.post("{baseURL}/messages/send.json".format(baseURL=self.baseURL),
         data=json.dumps(data))
-      return r.json()
+# Right now, we don't funnel data back about if the email failed to send, only 
+# if the email can't have sent (because the service didn't like the request)
+      return r.status_code == 200
     except ConnectionError, e:
       return False
     except HTTPError, e:

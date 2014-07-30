@@ -12,7 +12,10 @@ def hello():
 def send():
   d = {'sender': request.form['sender'],
        'to': request.form['to'].split(','),
+       'cc': request.form['cc'].split(','),
+       'bcc': request.form['bcc'].split(','),
        'subject': request.form['subject'],
        'text': request.form['text'],
+       'attachments': request.files.getlist('attachments')
       }
   return Response(json.dumps(mail.sendmail(**d)), mimetype="application/json")

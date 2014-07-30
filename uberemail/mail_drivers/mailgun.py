@@ -25,13 +25,29 @@ class MailgunMailer(Mailer):
     try:
 # We coerce all of the arguments to the desired types, since they don't
 # -necessarily- have to be strings or lists until we send them to the endpoint 
+# Don't directly assign kwargs over, as not all of the values will be properly
+# keyed
+      data={"from": str(kwargs['sender']),
+        "to": kwargs['to'],
+        "subject": str(kwargs['subject']),
+        "text": str(kwargs['text'])
+        }
+      if 'cc' in kwargs:
+        data['cc'] = kwargs['cc']
+      if 'bcc' in kwargs:
+        data['bcc'] = kwargs['bcc']
+      attachments = []
+      if 'attachments' in kwargs:
+        for attach in kwargs['attachments']:
+          print attach
+          attachments.append(('attachment',(attach.filename,attach)))
+      print "SENDING"
+      pp(data)
+      pp(attachments)
+      pp("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain))
       r = requests.post("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain),
-          auth=("api",self.key),
-          data={"from": str(kwargs['sender']),
-            "to": kwargs['to'],
-            "subject": str(kwargs['subject']),
-            "text": str(kwargs['text'])})
-      return r.json()
+          auth=("api",self.key),data=data,files=attachments)
+      return r.text
     except ConnectionError:
       return False
     except HTTPError:

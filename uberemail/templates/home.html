@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Email Sender</title>
-	</head>
-	<body>
-		<div>
-			<form action="/send" method="POST">
-				From: <input type="email" name="sender" /> <br />
-				To: <input type="email" name="to" multiple /> <br />
-				Subject: <input name="subject" /> <br />
-				Body: <input name="text" /> <br />
-				<input type="submit" />
-			</form>
-		</div>
-	</body>
+  <head>
+    <title>Email Sender</title>
+  </head>
+  <body>
+    <div>
+      <form action="/send" enctype="multipart/form-data" method="POST">
+        <table>
+          <tr>
+            <td style="text-align: right;"><label for="sender">From:</label></td><td><input type="email" name="sender" /> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="to">To:</label></td><td><input type="email" name="to" multiple /> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="cc">CC:</label></td><td> <input type="email" name="cc" multiple /> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="bcc">BCC:</label></td><td> <input type="email" name="bcc" multiple /> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="subject">Subject:</label></td><td> <input name="subject" /> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="text">Body:</label></td><td> <textarea name="text"> </textarea> </td>
+          </tr>
+          <tr>
+            <td style="text-align: right;"><label for="attachments">Attachments:</label></td><td> <input name="attachments" type="file" multiple /></td>
+          </tr>
+          <tr>
+            <td><input type="submit" /></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+  </body>
 </html>
