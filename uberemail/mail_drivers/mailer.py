@@ -1,4 +1,3 @@
-from pprint import pprint as pp
 
 class Mailer(object):
   """Base class for mail drivers."""
@@ -6,8 +5,8 @@ class Mailer(object):
   def __init__(self, **kwargs):
     print "Mailer init: " + kwargs['name']
 
-  def isup(self):
-    """Return whether or not this service is currently active and available."""
+  def _sendmail(self, **kwargs):
+    """Overload this in all subclasses."""
     return False
 
   def send(self, **kwargs):
@@ -19,4 +18,11 @@ class Mailer(object):
     subject -- subject line
     text -- body of the email
     """
-    return None
+    try:
+      assert("sender" in kwargs)
+      assert("to" in kwargs)
+      assert("subject" in kwargs)
+      assert("text" in kwargs)
+      return self._sendmail(**kwargs)
+    except AssertionError, e:
+      return False

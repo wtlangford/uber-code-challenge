@@ -29,9 +29,12 @@ def sendmail(**kwargs):
   text -- body of the email
   """
   print kwargs 
+# Attempt sending for each currently active driver.
   for driver in __drivers:
-    if (driver.isup()):
-      return driver.send(**kwargs)
+    success = driver.send(**kwargs)
+    if success:
+      return success
+  return False
 
 
 

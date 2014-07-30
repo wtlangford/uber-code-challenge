@@ -2,6 +2,7 @@ from mailer import Mailer
 from pprint import pprint as pp
 import json
 import requests
+from requests.exceptions import ConnectionError, HTTPError
 
 def build(**kwargs):
   return MandrillMailer(**kwargs)
@@ -19,15 +20,9 @@ class MandrillMailer(Mailer):
     self.name = kwargs['name']
     self.key = kwargs['api-key']
 
-  def isup(self):
-    return True
 
-  def send(self, **kwargs):
+  def _sendmail(self, **kwargs):
     try:
-      assert("sender" in kwargs)
-      assert("to" in kwargs)
-      assert("subject" in kwargs)
-      assert("text" in kwargs)
 # We coerce all of the arguments to the desired types, since they don't
 # -necessarily- have to be strings or lists until we send them to the endpoint 
       data = {"key": self.key,
@@ -42,5 +37,7 @@ class MandrillMailer(Mailer):
       r = requests.post("{baseURL}/messages/send.json".format(baseURL=self.baseURL),
         data=json.dumps(data))
       return r.json()
-    except AssertionError, e:
-      return None
+    except ConnectionError, e:
+      return False
+    except HTTPError, e:
+      return False

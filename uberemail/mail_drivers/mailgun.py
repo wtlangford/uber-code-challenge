@@ -1,6 +1,7 @@
 from mailer import Mailer
 from pprint import pprint as pp
 import requests
+from requests.exceptions import ConnectionError, HTTPError
 
 def build(**kwargs):
   return MailgunMailer(**kwargs)
@@ -20,15 +21,8 @@ class MailgunMailer(Mailer):
     self.key = kwargs['api-key']
     self.domain = kwargs['domain']
 
-  def isup(self):
-    return True
-
-  def send(self, **kwargs):
+  def _sendmail(self, **kwargs):
     try:
-      assert("sender" in kwargs)
-      assert("to" in kwargs)
-      assert("subject" in kwargs)
-      assert("text" in kwargs)
 # We coerce all of the arguments to the desired types, since they don't
 # -necessarily- have to be strings or lists until we send them to the endpoint 
       r = requests.post("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain),
@@ -38,5 +32,7 @@ class MailgunMailer(Mailer):
             "subject": str(kwargs['subject']),
             "text": str(kwargs['text'])})
       return r.json()
-    except AssertionError, e:
-      return None
+    except ConnectionError:
+      return False
+    except HTTPError:
+      return False
