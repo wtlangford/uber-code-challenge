@@ -1,0 +1,3 @@
+  - name: "Dummy Invalid Driver"
+    module: "dummyinvalid"
+    settings: {}

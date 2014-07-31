@@ -1,0 +1,4 @@
+  - name: "Mandrill Driver"
+    module: "mandrill"
+    settings:
+      "api-key": "IfMIP4CTdPC51cGF3Qlcvw"
