@@ -1,5 +1,4 @@
 from mailer import Mailer
-from pprint import pprint as pp
 import json
 import requests
 from requests.exceptions import ConnectionError, HTTPError
@@ -39,12 +38,16 @@ class MandrillMailer(Mailer):
       if 'attachments' in kwargs:
         attachments = []
         for attach in kwargs['attachments']:
+          dat = None
+          if isinstance(attach['data'], basestring):
+            dat = attach['data']
+          else:
+            dat = attach['data'].read()
           attachments.append({'type': attach['mimetype'],
                               'name': attach['filename'],
-                              'content': b64encode(attach['data'].read())})
+                              'content': b64encode(dat)})
         message['attachments'] = attachments
       data = {"key": self.key,"message": message}
-      pp(data)
       r = requests.post("{baseURL}/messages/send.json".format(baseURL=self.baseURL),
         data=json.dumps(data))
 # Right now, we don't funnel data back about if the email failed to send, only 

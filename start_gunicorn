@@ -1,0 +1,5 @@
+#!/bin/bash
+if [ ! -f ./tmp/pids/gunicorn.pid ];
+then
+  source bin/activate; gunicorn --debug -b '0.0.0.0:8000' -p `pwd`/tmp/pids/gunicorn.pid -w 1 -D uberemail:app --log-file=`pwd`/log/gunicorn.log
+fi

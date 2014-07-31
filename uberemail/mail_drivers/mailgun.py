@@ -1,5 +1,4 @@
 from mailer import Mailer
-from pprint import pprint as pp
 import requests
 from requests.exceptions import ConnectionError, HTTPError
 from ..exceptions import MailError
@@ -43,7 +42,6 @@ class MailgunMailer(Mailer):
           attachments.append(('attachment',(attach['filename'],attach['data'])))
       r = requests.post("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain),
           auth=("api",self.key),data=data,files=attachments)
-      pp(r.status_code)
       if r.status_code == 400:
         msg = r.json()['message']
         param = msg.split("'")[1]

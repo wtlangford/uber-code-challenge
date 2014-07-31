@@ -1,0 +1,5 @@
+  - name: "Mailgun Driver"
+    module: "mailgun"
+    settings:
+      "api-key": "Clearly fake key causes mailgun to deny request."
+      "domain": "sandbox3fcb2ef4e4974b8a84d972062d679153.mailgun.org"
