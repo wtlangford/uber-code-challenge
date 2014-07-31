@@ -4,6 +4,7 @@ import json
 import requests
 from requests.exceptions import ConnectionError, HTTPError
 from base64 import b64encode
+from ..exceptions import MailError #grab this from above.
 
 def build(**kwargs):
   return MandrillMailer(**kwargs)
@@ -38,9 +39,9 @@ class MandrillMailer(Mailer):
       if 'attachments' in kwargs:
         attachments = []
         for attach in kwargs['attachments']:
-          attachments.append({'type': attach.mimetype,
-                              'name': attach.filename,
-                              'content': b64encode(attach.read())})
+          attachments.append({'type': attach['mimetype'],
+                              'name': attach['filename'],
+                              'content': b64encode(attach['data'].read())})
         message['attachments'] = attachments
       data = {"key": self.key,"message": message}
       pp(data)
@@ -48,6 +49,15 @@ class MandrillMailer(Mailer):
         data=json.dumps(data))
 # Right now, we don't funnel data back about if the email failed to send, only 
 # if the email can't have sent (because the service didn't like the request)
+      if r.status_code != 200:
+        result = r.json()
+        if result['name'] == 'ValidationError':
+          err = json.loads(result['message'][18:])
+          if err['message'].keys()[0] == 'from_email':
+            raise MailError("Invalid parameter 'sender'.", MailError.InvalidParameter)
+          else:
+            raise MailError("Unknown validation error. " + pf(err),MailError.InvalidParameter)
+      print r.text
       return r.status_code == 200
     except ConnectionError, e:
       return False

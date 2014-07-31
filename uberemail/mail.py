@@ -1,5 +1,6 @@
 import yaml
 import importlib
+from exceptions import MailError
 __all__ = ['sendmail']
 __drivers = []
 
@@ -8,6 +9,8 @@ def __load_mail_drivers():
   _conf = []
   with open("config/mail.yml","r") as cfgfile:
     cfg = yaml.load(cfgfile)
+    if cfg is None or cfg["drivers"] is None:
+      return []
     for driver_cfg in cfg["drivers"]:
       try:
         driver_mod = importlib.import_module(".mail_drivers."+driver_cfg["module"], __package__)
@@ -22,11 +25,17 @@ def sendmail(**kwargs):
   Services are used in the order in which they are listed
   in the configuration file.
 
-  Keyword arguments:
+  Required keyword arguments:
   sender -- email address of the sender
   to -- email address(es) of the recipients
   subject -- subject line of the email
   text -- body of the email
+
+  Optional keyword arguments:
+  cc -- email address(es) of the cc recipients
+  bcc -- email address(es) of the bcc recipients
+  attachments -- array of dict("filename", "mimetype", "data").  Data is to be
+    like a file object.
   """
   print kwargs 
 # Attempt sending for each currently active driver.
@@ -34,7 +43,7 @@ def sendmail(**kwargs):
     success = driver.send(**kwargs)
     if success:
       return success
-  return False
+  raise MailError("No services able to send email.", MailError.NoServicesActive)
 
 
 

@@ -2,6 +2,7 @@ from mailer import Mailer
 from pprint import pprint as pp
 import requests
 from requests.exceptions import ConnectionError, HTTPError
+from ..exceptions import MailError
 
 def build(**kwargs):
   return MailgunMailer(**kwargs)
@@ -39,15 +40,21 @@ class MailgunMailer(Mailer):
       attachments = []
       if 'attachments' in kwargs:
         for attach in kwargs['attachments']:
-          print attach
-          attachments.append(('attachment',(attach.filename,attach)))
-      print "SENDING"
-      pp(data)
-      pp(attachments)
-      pp("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain))
+          attachments.append(('attachment',(attach['filename'],attach['data'])))
       r = requests.post("{baseURL}/{domain}/messages".format(baseURL=self.baseURL,domain=self.domain),
           auth=("api",self.key),data=data,files=attachments)
-      return r.text
+      pp(r.status_code)
+      if r.status_code == 400:
+        msg = r.json()['message']
+        param = msg.split("'")[1]
+        if param == 'from':
+          raise MailError("Invalid parameter 'to'.", MailError.InvalidParameter)
+        raise MailError("Invalid parameter " + param, MailError.InvalidParameter)
+      elif r.status_code == 200:
+        return True
+      else:
+        print "MailgunMailer: Error:{}: {}".format(r.status_code,r.text) # log it for later.
+        return False
     except ConnectionError:
       return False
     except HTTPError:

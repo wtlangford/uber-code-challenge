@@ -1,18 +1,22 @@
 drivers:
-  - name: "Mandrill Driver"
-    module: "mandrill"
-    settings:
-      "api-key": "IfMIP4CTdPC51cGF3Qlcvw"
-  - name: "Mailgun Driver"
-    module: "mailgun"
-    settings:
-      "api-key": "key-6a349d6acd7c54cba1ad9018382124f7"
-      domain: "sandbox3fcb2ef4e4974b8a84d972062d679153.mailgun.org"
-  - name: "Dummy Driver"
-    module: "dummy"
-    settings:
-      a: "A"
-      b: "B"
+# - name: "Mandrill Driver"
+#   module: "mandrill"
+#   settings:
+#     "api-key": "IfMIP4CTdPC51cGF3Qlcvw"
+#  - name: "Mailgun Driver"
+#    module: "mailgun"
+#    settings:
+#      "api-key": "key-6a349d6acd7c54cba1ad9018382124f7"
+#      "domain": "sandbox3fcb2ef4e4974b8a84d972062d679153.mailgun.org"
+ - name: "Dummy Fail Driver"
+   module: "dummyfail"
+   settings: {}
+ - name: "Dummy Pass Driver"
+   module: "dummypass"
+   settings: {}
+ - name: "Dummy Invalid Driver"
+   module: "dummyinvalid"
+   settings: {}
 
 
 
