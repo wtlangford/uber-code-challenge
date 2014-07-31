@@ -8,7 +8,7 @@ Technical Choices
 - Written in Python 2
 - Uses Flask for the HTTP server
   - Flask was chosen for its light weight and ease of use
-- Configuration files are written in yaml
+- Configuration files are written in yaml, using PyYAML for loading
 - The requests library is used for all HTTP requests, as urllib2 is just sad.
 - gunicorn is used to interface between the application and the internet. In a more serious production environment, gunicorn should be behind an nginx proxy.
 - In order to make the service flexible and modular, the connections to the mail servers are loaded dynamically.  When the server starts up, the config file is processed.  Each service listed contains a settings dictionary (to allow multiple instances of the same service to coexist.  Multiple mailgun accounts, perhaps), as well as a module name.
