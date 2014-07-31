@@ -34,8 +34,8 @@ def sendmail(**kwargs):
   Optional keyword arguments:
   cc -- email address(es) of the cc recipients
   bcc -- email address(es) of the bcc recipients
-  attachments -- array of dict("filename", "mimetype", "data").  Data is to be
-    like a file object.
+  attachments -- array of dict("filename", "mimetype", "data"). Data may be
+    either a string or a file-like object.
   """
   print kwargs 
 # Attempt sending for each currently active driver.
